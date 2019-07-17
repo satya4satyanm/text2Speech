@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Speech Recording</title>
+<script src="jquery-2.1.1.min.js"></script>
+    
+</head>
+<body>
+    <button id="speak-button">Speak</button>
+    <textarea id="tf"></textarea>
+    <script>
+        window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+        let finalTranscript = '';
+        let recognition = new window.SpeechRecognition();
+    
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 10;
+        recognition.continuous = true;
+    
+        recognition.onresult = (event) => {
+          let interimTranscript = '';
+          for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
+            let transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript;
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+    
+          $('#tf').val(finalTranscript + '' + interimTranscript + '');
+        }
+        recognition.start();
+    
+    
+
+     
+      
+var available_voices = window.speechSynthesis.getVoices();
+
+$("#speak-button").on('click', function() {
+
+    var utter = new SpeechSynthesisUtterance();
+    utter.text = "Hello! How are you?";
+	utter.text = $("#tf").val();
+    utter.rate = 0.8;
+    utter.pitch = 0.5;
+    utter.voice = available_voices[3];
+
+    window.speechSynthesis.speak(utter);
+
+});
+</script>
+</body>
+</html>
